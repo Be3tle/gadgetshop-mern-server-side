@@ -62,12 +62,14 @@ async function run() {
       const product = {
         $set: {
           name: updatedProduct.name,
-          brandName: updatedProduct.brandName,
+          brand: updatedProduct.brand,
           type: updatedProduct.type,
           price: updatedProduct.price,
           rating: updatedProduct.rating,
         },
       };
+
+      // test
 
       const result = await productCollection.updateOne(
         filter,
@@ -90,7 +92,7 @@ async function run() {
 run().catch(console.dir);
 
 app.get('/', (req, res) => {
-  res.send('Gadget shop server is on the run');
+  res.send('Gadget shop server is on the run. Too much fun');
 });
 
 app.listen(port, () => {
