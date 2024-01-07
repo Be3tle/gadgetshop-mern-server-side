@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 
 // middleware
 app.use(cors());
@@ -22,9 +22,6 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
-
     const productCollection = client.db('productDB').collection('product');
 
     const cartCollection = client.db('productDB').collection('cart');
@@ -48,19 +45,6 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/cart', async (req, res) => {
-      // const userEmail = req.body.email;
-      // const query = { email: userEmail };
-      // const cursor = cartCollection.find(query);
-      // const result = await cursor.toArray();
-      // res.send(result);
-      // console.log(result);
-
-      const cursor = cartCollection.find();
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
     app.post('/cart', async (req, res) => {
       const cart = req.body;
       console.log(cart);
@@ -68,10 +52,10 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/cart/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await cartCollection.findOne(query);
+    app.get('/cart/:email', async (req, res) => {
+      const email = req.params.email;
+      const userEmail = { email: email };
+      const result = await cartCollection.find(userEmail).toArray();
       res.send(result);
     });
 
@@ -98,8 +82,6 @@ async function run() {
         },
       };
 
-      // test
-
       const result = await productCollection.updateOne(
         filter,
         product,
@@ -107,15 +89,7 @@ async function run() {
       );
       res.send(result);
     });
-
-    // Send a ping to confirm a successful connection
-    // await client.db('admin').command({ ping: 1 });
-    // console.log(
-    //   'Pinged your deployment. You successfully connected to MongoDB!'
-    // );
   } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
   }
 }
 run().catch(console.dir);
